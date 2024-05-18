@@ -122,24 +122,29 @@
 
       function onPlayerReady(event) {
         sendMessageToRN({eventType: 'playerReady'});
-        // Inyectar el script para ocultar la clase
+        // Inyectar el script para ocultar el título y miniaturas
         const hideElementsScript = `
-          var hideElements = function() {
-            var titleElement = document.querySelector('.ytp-title');
-            var thumbnailElement = document.querySelector('.ytp-cued-thumbnail-overlay');
-            if (titleElement) {
-              titleElement.style.display = 'none';
-            }
-            if (thumbnailElement) {
-              thumbnailElement.style.display = 'none';
-            }
-          };
-          var observer = new MutationObserver(hideElements);
+          var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              var titleElement = document.querySelector('.ytp-chrome-top.ytp-show-cards-title');
+              var thumbnailElement = document.querySelector('.ytp-cued-thumbnail-overlay');
+              var shareButton = document.querySelector('.ytp-chrome-top-buttons .ytp-button.ytp-share-button');
+              if (titleElement) {
+                titleElement.style.display = 'none';
+              }
+              if (thumbnailElement) {
+                thumbnailElement.style.display = 'none';
+              }
+              if (shareButton) {
+                shareButton.style.display = 'none';
+              }
+            });
+          });
+
           observer.observe(document.body, { childList: true, subtree: true });
-          hideElements();
         `;
         var script = document.createElement('script');
-        script.innerHTML = hideElementScript;
+        script.innerHTML = hideElementsScript;
         document.body.appendChild(script);
       }
 
