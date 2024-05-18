@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width," />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <style>
       body {
         margin: 0;
@@ -77,8 +77,8 @@
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player(randomPlayerId, {
-          width: '1000',
-          height: '1000',
+          width: '100%',
+          height: '100%',
           videoId: videoId_s,
           playerVars: {
             end: end,
@@ -123,11 +123,20 @@
       function onPlayerReady(event) {
         sendMessageToRN({eventType: 'playerReady'});
         // Inyectar el script para ocultar la clase
-        const hideElementScript = `
-          var element = document.querySelector('.ytp-chrome-top.ytp-show-cards-title');
-          if (element) {
-            element.style.display = 'none';
-          }
+        const hideElementsScript = `
+          var hideElements = function() {
+            var titleElement = document.querySelector('.ytp-title');
+            var thumbnailElement = document.querySelector('.ytp-cued-thumbnail-overlay');
+            if (titleElement) {
+              titleElement.style.display = 'none';
+            }
+            if (thumbnailElement) {
+              thumbnailElement.style.display = 'none';
+            }
+          };
+          var observer = new MutationObserver(hideElements);
+          observer.observe(document.body, { childList: true, subtree: true });
+          hideElements();
         `;
         var script = document.createElement('script');
         script.innerHTML = hideElementScript;
