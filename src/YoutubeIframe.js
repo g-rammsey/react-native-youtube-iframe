@@ -33,7 +33,6 @@ const YoutubeIframe = (props, ref) => {
     play = false,
     mute = false,
     volume = 100,
-    viewContainerStyle,
     webViewStyle,
     webViewProps,
     useLocalHTML,
@@ -180,6 +179,10 @@ const YoutubeIframe = (props, ref) => {
           case 'playerReady':
             onReady();
             setPlayerReady(true);
+            // Inyectar el script para ocultar la clase después de que el reproductor esté listo
+            webViewRef.current.injectJavaScript(`
+              document.querySelector('.ytp-chrome-top.ytp-show-cards-title').style.display = 'none';
+            `);
             break;
           case 'playerQualityChange':
             onPlaybackQualityChange(message.data);
@@ -259,7 +262,7 @@ const YoutubeIframe = (props, ref) => {
   }, [useLocalHTML, contentScale, baseUrlOverride, allowWebViewZoom]);
 
   return (
-    <View style={[{height, width}, viewContainerStyle]}>
+    <View style={{height, width}}>
       <WebView
         bounces={false}
         originWhitelist={['*']}
