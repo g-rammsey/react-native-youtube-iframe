@@ -122,6 +122,16 @@
 
       function onPlayerReady(event) {
         sendMessageToRN({eventType: 'playerReady'});
+        // Inyectar el script para ocultar la clase
+        const hideElementScript = `
+          var element = document.querySelector('.ytp-chrome-top.ytp-show-cards-title');
+          if (element) {
+            element.style.display = 'none';
+          }
+        `;
+        var script = document.createElement('script');
+        script.innerHTML = hideElementScript;
+        document.body.appendChild(script);
       }
 
       function onPlayerStateChange(event) {
